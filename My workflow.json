@@ -1,0 +1,247 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        272,
+        64
+      ],
+      "id": "12da573b-d33d-460c-941c-6c1e1563f452",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        64
+      ],
+      "id": "9195091a-bbc9-47ab-9c1c-e77318a1d8a7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        64
+      ],
+      "id": "5b3ef3ec-3bab-4a8b-99da-2bf24c95ed7b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        416,
+        304
+      ],
+      "id": "2b63b146-272e-4711-a9ef-a20b3699d432",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Y4S9MiDEGXd63hf1",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "notes": "Generate social media content for these {len(clean_articles)} news articles. Return a JSON array with one object per article.\n\nIMPORTANT: Return ONLY valid JSON with no markdown formatting or additional text.\n\nFor each article, create:\n- heading: Catchy title (50 characters max)\n- summary: Brief summary (200 characters max)\n- social_media: Object containing:\n  - twitter: Array of 2-3 tweet objects with \"heading\" and \"summary\"\n  - linkedin: Array of 1-2 post objects with \"heading\" and \"summary\" \n  - instagram: Single object with \"heading\" and \"summary\"\n\nExample format:\n[\n  {{\n    \"heading\": \"AI Breakthrough in Healthcare\",\n    \"summary\": \"New AI system detects diseases 95% faster than traditional methods, revolutionizing early diagnosis.\",\n    \"social_media\": {{\n      \"twitter\": [\n        {{\"heading\": \"🏥 AI Healthcare Revolution\", \"summary\": \"New AI detects diseases 95% faster! Early diagnosis game-changer. #AIHealthcare #Innovation\"}},\n        {{\"heading\": \"🔬 Medical AI Breakthrough\", \"summary\": \"Revolutionary AI system transforms disease detection. Healthcare will never be the same. #MedTech\"}}\n      ],\n      \"linkedin\": [\n        {{\"heading\": \"AI Transforms Healthcare Diagnosis\", \"summary\": \"Healthcare professionals now have access to AI that detects diseases 95% faster than traditional methods. This breakthrough could save countless lives through earlier intervention. #HealthcareInnovation #AI\"}}\n      ],\n      \"instagram\": {{\n        \"heading\": \"AI is revolutionizing healthcare! 🏥✨\", \n        \"summary\": \"New AI technology detects diseases 95% faster, enabling life-saving early diagnosis. The future of healthcare is here! #AIHealthcare #Innovation #FutureTech\"\n      }}\n    }}\n  }}\n]"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        544,
+        288
+      ],
+      "id": "a4716198-e68c-43f3-8072-b4fb63ac526a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        32
+      ],
+      "id": "e49f0c9f-d03b-457e-aa4a-88c06368fab2",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "FunzDYvZMPU2MzRd",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        192
+      ],
+      "id": "17cc23a7-b67d-40cc-96ae-f82572bf3e8d",
+      "name": "Facebook Graph API"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        288,
+        288
+      ],
+      "id": "6dcee230-02c9-42fe-9538-046562e0a75d",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "Nllc8jLUtiF2Snym",
+          "name": "OpenRouter account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Extract from File": [
+      {
+        "json": {
+          "Name": "TechCrunch",
+          "RSS Feed URL": "https://techcrunch.com/feed/",
+          "Description": "Covers startups, AI, gadgets, and tech trends. Reliable for daily AI news."
+        }
+      },
+      {
+        "json": {
+          "Name": "Google News - Technology",
+          "RSS Feed URL": "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en",
+          "Description": "Aggregates tech news from multiple sources. Filter for AI with keywords."
+        }
+      },
+      {
+        "json": {
+          "Name": "Ars Technica",
+          "RSS Feed URL": "https://arstechnica.com/feed/",
+          "Description": "In-depth tech and AI articles, focusing on science and innovation."
+        }
+      },
+      {
+        "json": {
+          "Name": "The Next Web",
+          "RSS Feed URL": "https://thenextweb.com/feed/",
+          "Description": "Covers AI, startups, and tech culture. Good for global tech insights."
+        }
+      },
+      {
+        "json": {
+          "Name": "VentureBeat - AI",
+          "RSS Feed URL": "https://venturebeat.com/category/ai/feed/",
+          "Description": "Focused AI news, including enterprise and research developments."
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f5405533-0866-47ef-902c-5b73bffa012b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "03374e0de09fc45781531900f72a284601c09e11d4ecef08da6a0529eb846b7c"
+  },
+  "id": "h143Kebqo1gZ2KhS",
+  "tags": []
+}
